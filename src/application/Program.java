@@ -16,7 +16,9 @@ public class Program {
 		
 		SellerDao sellerDao = DaoFactory.createSellerDao();
 		
-		Seller seller = sellerDao.findById(3);
+		Seller seller = new Seller();
+		
+		/*Seller seller = sellerDao.findById(3);
 		System.out.println("=== TEST 1: Seller findById ===");
 		System.out.println(seller);
 		
@@ -38,24 +40,23 @@ public class Program {
 		System.out.println("\n=== TEST 4: Seller Insert ===");
 		Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, department);
 		sellerDao.insert(newSeller);
-		System.out.println("Inserted! New id = " + newSeller.getId());
+		System.out.println("Inserted! New id = " + newSeller.getId());*/
 		
 		System.out.println("\n=== TEST 5: Seller Update ===");
 		//pego a id do seller
-		seller = sellerDao.findById(1);
+		seller = sellerDao.findById(7);
 		//dou u set no nome do seller
-		seller.setName("Martha Waine");
+		seller.setName("Bruno Peixoto");
 		//atualizo o nome na tabela Seller
 		sellerDao.update(seller);
 		System.out.println("Update completed!");
 		
-		System.out.println("\n=== TEST 6: Seller Delete ===");
-		System.out.print("Informe o Id para o teste de delete: ");
-		int id = sc.nextInt();
 		
-		sellerDao.deleteById(id);
-		System.out.println("Delete completed!");	
-		
-		sc.close();
+			System.out.println("\n=== TEST 6: Seller Delete ===");
+			System.out.print("Informe o Id para o teste de delete: ");
+			int id = sc.nextInt();
+			sellerDao.deleteById(id);
+			System.out.println("Delete completed!");
+			sc.close();
 	}
 }

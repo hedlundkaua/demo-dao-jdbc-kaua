@@ -187,6 +187,7 @@ public class SellerDaoJDBC implements SellerDao {
 				
 				Department dep = map.get(rs.getInt("DepartmentId"));
 				
+				
 				//se o dep for nulo, ai sim instanciamos o novo departamento
 				if(dep == null) {					
 					dep = instantiateDepartment(rs);

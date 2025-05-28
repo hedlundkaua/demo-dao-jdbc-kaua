@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -57,14 +60,33 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"UPDATE seller "  
+					"UPDATE department "  
 					+ "SET Name = ? "  
 					+ "WHERE Id = ?");
 			st.setString(1, obj.getName());
 			st.setInt(2, obj.getId());
 			
 			int rowsAffected = st.executeUpdate();
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 			
+	}
+
+	@Override
+	public void deleteById(Integer obj) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"DELETE from Department WHERE id = ?");
+			
+			st.setInt(1, obj);
+			
+			int arowsAffected = st.executeUpdate();
 		}
 		catch (SQLException e) {
 			throw new DbException(e.getMessage());
@@ -77,21 +99,65 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 	}
 
 	@Override
-	public void deleteById(Integer obj) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Department findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT * FROM department WHERE id = ?;");
+										
+			st.setInt(1, id);
+			
+			//ResultSet é para querys
+			rs = st.executeQuery();
+			if(rs.next()) {
+				Department dep = instantiateDepartment(rs); 
+				return dep;
+			}
+			return null;		
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
 	}
 
 	@Override
 	public List<Department> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT * FROM department");
+						
+			rs = st.executeQuery();
+			
+			List<Department> list = new ArrayList<Department>();
+			Map<Integer, Department> map = new HashMap<>();
+			
+			
+						
+			while(rs.next()) {				
+				Department dep = map.get(rs.getInt("Id"));
+				dep = instantiateDepartment(rs);	
+				
+				list.add(dep);
+			}
+			return list;
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+	}	
+	
+	
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("Id"));
+		dep.setName(rs.getString("Name"));
+		return dep;
 	}
-
 }
